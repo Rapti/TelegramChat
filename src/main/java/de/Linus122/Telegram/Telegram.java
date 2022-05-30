@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -17,11 +19,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import de.Linus122.TelegramComponents.ChatMessageToTelegram;
+import de.Linus122.TelegramComponents.*;
 import de.Linus122.TelegramChat.TelegramChat;
-import de.Linus122.TelegramComponents.Chat;
-import de.Linus122.TelegramComponents.ChatMessageToMc;
-import de.Linus122.TelegramComponents.Update;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 
 public class Telegram {
 	public JsonObject authJson;
@@ -181,6 +185,66 @@ public class Telegram {
 					// post("sendMessage", gson.toJson(chat, Chat.class));
 					sendMsg(chat);
 				}
+			}
+		}).start();
+	}
+
+	public void updateGroupDesc() {
+		updateGroupDesc(null);
+	}
+	public void updateGroupDesc(Event e) {
+		if(!TelegramChat.getCfg().getBoolean("change-group-description", false)) return;
+
+		final int maxlength = 255; // Maximum description length defined by Telegram
+
+		String base = TelegramChat.getCfg().getString("group-description.base", "%s");
+		String status = "";
+		if(e instanceof WorldUnloadEvent) {
+			status = TelegramChat.getCfg().getString("group-description.offline", "The server is offline.");
+		} else {
+			Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+			if (e instanceof PlayerQuitEvent) {
+				LinkedList<Player> list = new LinkedList<>();
+				for(Player p: players) {
+					if (!p.equals(((PlayerQuitEvent) e).getPlayer())) {
+						list.add(p);
+					}
+				}
+				players = list;
+			}
+			if (players.size() == 0) {
+				status = TelegramChat.getCfg().getString("group-description.nobody-online", "There are no players currently online.");
+			} else {
+				status = String.format(TelegramChat.getCfg().getString("group-description.num-players", "%s player(s) online"), players.size());
+				String format = TelegramChat.getCfg().getString("group-description.player", "%s");
+				String playerlist = "";
+				int remaining = players.size();
+				for (Player p : players) {
+					final int length = String.format(base, status).length();
+					String line = "\n"+String.format(format, p.getDisplayName());
+					String fallback = "\n+"+remaining;
+					if(length + line.length() <= maxlength) {
+						status += line;
+					} else {
+						if(length + fallback.length() <= maxlength) {
+							status += fallback;
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		String desc;
+		desc = String.format(base, status);
+		final ChatDescription update = new ChatDescription();
+		update.description = desc;
+		new Thread(() -> {
+			for (long id : TelegramChat.getBackend().chat_ids) {
+				if(id >= 0) continue; // Disregard private chats
+				update.chat_id = id;
+				System.out.println("Sending JSON " + gson.toJson(update, ChatDescription.class));
+				post("setChatDescription", gson.toJson(update, ChatDescription.class));
 			}
 		}).start();
 	}

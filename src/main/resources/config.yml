@@ -18,3 +18,10 @@ enable-joinquitmessages: true
 enable-deathmessages: true
 enable-chatmessages: true
 no-link-required: false
+enable-group-description: false
+group-description:
+  base: "Welcome to our server's group chat!\n\n%s"
+  nobody-online: "There are no players currently online."
+  num-players: "%s player(s) online"
+  player: "\n`%s`"
+  offline: "The server is offline."

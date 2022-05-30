@@ -25,6 +25,7 @@ public class VanishHandler implements Listener
             chat.text = Utils.formatMSG("quit-message", e.getPlayer().getName())[0];
             TelegramChat.telegramHook.sendAll(chat);
         }
+        TelegramChat.telegramHook.updateGroupDesc(e);
     }
 
     @EventHandler
@@ -40,5 +41,6 @@ public class VanishHandler implements Listener
             chat.text = Utils.formatMSG("join-message", e.getPlayer().getName())[0];
             TelegramChat.telegramHook.sendAll(chat);
         }
+        TelegramChat.telegramHook.updateGroupDesc(e);
     }
 }

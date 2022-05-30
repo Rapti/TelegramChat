@@ -18,11 +18,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.gson.Gson;
@@ -54,6 +57,8 @@ public class TelegramChat extends JavaPlugin implements Listener {
 		Bukkit.getPluginCommand("telegram").setExecutor(new TelegramCmd());
 		Bukkit.getPluginCommand("linktelegram").setExecutor(new LinkTelegramCmd());
 		Bukkit.getPluginManager().registerEvents(this, this);
+		Bukkit.getPluginManager().registerEvent(WorldLoadEvent.class,   this, EventPriority.NORMAL, (listener, event) -> telegramHook.updateGroupDesc(event), this);
+		Bukkit.getPluginManager().registerEvent(WorldUnloadEvent.class, this, EventPriority.NORMAL, (listener, event) -> telegramHook.updateGroupDesc(event), this);
 
 		if (Bukkit.getPluginManager().isPluginEnabled("SuperVanish") || Bukkit.getPluginManager().isPluginEnabled("PremiumVanish")) {
 			isSuperVanish = true;
@@ -113,6 +118,8 @@ public class TelegramChat extends JavaPlugin implements Listener {
 				connectionLost = !telegramHook.getUpdate();
 			}
 		}, 10L, 10L);
+
+		telegramHook.updateGroupDesc();
 
 		new Metrics(this);
 	}
@@ -215,6 +222,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 			chat.text = Utils.formatMSG("join-message", e.getPlayer().getName())[0];
 			telegramHook.sendAll(chat);
 		}
+		telegramHook.updateGroupDesc(e);
 	}
 
 	@EventHandler
@@ -243,6 +251,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 			chat.text = Utils.formatMSG("quit-message", e.getPlayer().getName())[0];
 			telegramHook.sendAll(chat);
 		}
+		telegramHook.updateGroupDesc(e);
 	}
 
 	@EventHandler
