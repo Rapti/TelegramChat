@@ -7,7 +7,7 @@ public class Cancellable {
 		return isCancelled;
 	}
 
-	public void setCancelled(boolean isCancelled) {
-		this.isCancelled = isCancelled;
+	public void cancel() {
+		this.isCancelled = true;
 	}
 }
