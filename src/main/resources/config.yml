@@ -17,3 +17,4 @@ messages:
 enable-joinquitmessages: true
 enable-deathmessages: true
 enable-chatmessages: true
+no-link-required: false

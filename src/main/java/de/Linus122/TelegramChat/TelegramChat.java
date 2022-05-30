@@ -145,16 +145,22 @@ public class TelegramChat extends JavaPlugin implements Listener {
 	}
 
 	public static void sendToMC(ChatMessageToMc chatMsg) {
-		sendToMC(chatMsg.getUuid_sender(), chatMsg.getContent(), chatMsg.getChatID_sender());
+		if(chatMsg.senderIsLinked())
+			sendToMC(chatMsg.getUuid_sender(), chatMsg.getContent(), chatMsg.getChatID_sender());
+		else 
+			sendToMC(chatMsg.getTelegramName(), chatMsg.getContent(), chatMsg.getChatID_sender());
 	}
 
 	private static void sendToMC(UUID uuid, String msg, long sender_chat) {
 		OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
-		List<Long> recievers = new ArrayList<Long>();
-		recievers.addAll(TelegramChat.data.chat_ids);
-		recievers.remove((Object) sender_chat);
-		String msgF = Utils.formatMSG("general-message-to-mc", op.getName(), msg)[0];
-		for (long id : recievers) {
+		sendToMC(op.getName(), msg, sender_chat);
+	}
+	private static void sendToMC(String name, String msg, long sender_chat) {
+		List<Long> receivers = new ArrayList<Long>();
+		receivers.addAll(TelegramChat.data.chat_ids);
+		receivers.remove((Object) sender_chat);
+		String msgF = Utils.formatMSG("general-message-to-mc", name, msg)[0];
+		for (long id : receivers) {
 			telegramHook.sendMsg(id, msgF.replaceAll("§.", ""));
 		}
 		Bukkit.broadcastMessage(msgF.replace("&", "§"));
