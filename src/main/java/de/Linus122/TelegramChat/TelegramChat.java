@@ -50,7 +50,6 @@ public class TelegramChat extends JavaPlugin implements Listener {
 		this.saveDefaultConfig();
 		cfg = this.getConfig();
 		instance = this;
-		Utils.cfg = cfg;
 
 		Bukkit.getPluginCommand("telegram").setExecutor(new TelegramCmd());
 		Bukkit.getPluginCommand("linktelegram").setExecutor(new LinkTelegramCmd());
@@ -261,4 +260,8 @@ public class TelegramChat extends JavaPlugin implements Listener {
 		return instance;
 	}
 
+
+	public static FileConfiguration getCfg() {
+		return cfg;
+	}
 }
