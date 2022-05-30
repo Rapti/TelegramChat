@@ -18,6 +18,8 @@ public class BanHandler implements TelegramActionListener{
 
 	@Override
 	public void onSendToMinecraft(ChatMessageToMc chatMsg) {
+		if(!chatMsg.senderIsLinked()) return;
+
 		OfflinePlayer player = Bukkit.getOfflinePlayer(chatMsg.getUuid_sender());
 
 		if(player != null && player.isBanned()) {

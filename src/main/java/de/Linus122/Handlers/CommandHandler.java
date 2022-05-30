@@ -64,7 +64,8 @@ public class CommandHandler extends ConsoleHandler implements TelegramActionList
 
 	@Override
 	public void onSendToMinecraft(ChatMessageToMc chatMsg) {
-	
+		if(!chatMsg.senderIsLinked()) return;
+
 		if(permissionsAdapter == null) {
 			// setting up vault permissions
 			this.setupVault();
