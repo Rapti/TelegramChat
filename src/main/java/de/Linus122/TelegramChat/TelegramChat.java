@@ -57,8 +57,6 @@ public class TelegramChat extends JavaPlugin implements Listener {
 		Bukkit.getPluginCommand("telegram").setExecutor(new TelegramCmd());
 		Bukkit.getPluginCommand("linktelegram").setExecutor(new LinkTelegramCmd());
 		Bukkit.getPluginManager().registerEvents(this, this);
-		Bukkit.getPluginManager().registerEvent(WorldLoadEvent.class,   this, EventPriority.NORMAL, (listener, event) -> telegramHook.updateGroupDesc(event), this);
-		Bukkit.getPluginManager().registerEvent(WorldUnloadEvent.class, this, EventPriority.NORMAL, (listener, event) -> telegramHook.updateGroupDesc(event), this);
 
 		if (Bukkit.getPluginManager().isPluginEnabled("SuperVanish") || Bukkit.getPluginManager().isPluginEnabled("PremiumVanish")) {
 			isSuperVanish = true;
@@ -127,6 +125,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 	@Override
 	public void onDisable() {
 		save();
+		telegramHook.updateGroupDescOffline();
 	}
 
 	public static void save() {
@@ -222,7 +221,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 			chat.text = Utils.formatMSG("join-message", e.getPlayer().getName())[0];
 			telegramHook.sendAll(chat);
 		}
-		telegramHook.updateGroupDesc(e);
+		telegramHook.updateGroupDesc();
 	}
 
 	@EventHandler
@@ -251,7 +250,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 			chat.text = Utils.formatMSG("quit-message", e.getPlayer().getName())[0];
 			telegramHook.sendAll(chat);
 		}
-		telegramHook.updateGroupDesc(e);
+		telegramHook.updateGroupDesc();
 	}
 
 	@EventHandler

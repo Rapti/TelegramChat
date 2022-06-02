@@ -189,17 +189,17 @@ public class Telegram {
 		}).start();
 	}
 
-	public void updateGroupDesc() {
-		updateGroupDesc(null);
-	}
-	public void updateGroupDesc(Event e) {
+	public void updateGroupDescOffline() {updateGroupDesc(null, true);}
+	public void updateGroupDesc() {updateGroupDesc(null, false);}
+	public void updateGroupDesc(Event e) {updateGroupDesc(e, false);}
+	public void updateGroupDesc(Event e, boolean goingOffline) {
 		if(!TelegramChat.getCfg().getBoolean("change-group-description", false)) return;
 
 		final int maxlength = 255; // Maximum description length defined by Telegram
 
 		String base = TelegramChat.getCfg().getString("group-description.base", "%s");
 		String status = "";
-		if(e instanceof WorldUnloadEvent) {
+		if(goingOffline) {
 			status = TelegramChat.getCfg().getString("group-description.offline", "The server is offline.");
 		} else {
 			Collection<? extends Player> players = Bukkit.getOnlinePlayers();
