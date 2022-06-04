@@ -209,6 +209,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
+		telegramHook.updateGroupDesc(e);
 		if (!this.getConfig().getBoolean("enable-joinquitmessages"))
 			return;
 
@@ -221,7 +222,6 @@ public class TelegramChat extends JavaPlugin implements Listener {
 			chat.text = Utils.formatMSG("join-message", e.getPlayer().getName())[0];
 			telegramHook.sendAll(chat);
 		}
-		telegramHook.updateGroupDesc();
 	}
 
 	@EventHandler
@@ -238,6 +238,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
+		telegramHook.updateGroupDesc(e);
 		if (!this.getConfig().getBoolean("enable-joinquitmessages"))
 			return;
 
@@ -250,7 +251,6 @@ public class TelegramChat extends JavaPlugin implements Listener {
 			chat.text = Utils.formatMSG("quit-message", e.getPlayer().getName())[0];
 			telegramHook.sendAll(chat);
 		}
-		telegramHook.updateGroupDesc();
 	}
 
 	@EventHandler
