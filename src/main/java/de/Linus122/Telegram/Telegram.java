@@ -195,7 +195,9 @@ public class Telegram {
 	public void updateGroupDesc(Event e, boolean goingOffline) {
 		if(!TelegramChat.getCfg().getBoolean("change-group-description", false)) return;
 
-		final int maxlength = 255; // Maximum description length defined by Telegram
+		// Maximum description length defined by Telegram.
+		// See https://core.telegram.org/bots/api#setchatdescription
+		final int maxlength = 255;
 
 		String base = TelegramChat.getCfg().getString("group-description.base", "%s");
 		String status = "";
