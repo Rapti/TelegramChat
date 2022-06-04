@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import de.Linus122.Handlers.PlayerListCommandHandler;
 import de.Linus122.Handlers.VanishHandler;
 import de.myzelyam.api.vanish.VanishAPI;
 import org.bukkit.Bukkit;
@@ -101,7 +102,13 @@ public class TelegramChat extends JavaPlugin implements Listener {
 		
 		// Ban Handler (Prevents banned players from chatting)
 		telegramHook.addListener(new BanHandler());
-		
+
+		// Allows server commands to be issued from Telegram
+		// telegramHook.addListener(new CommandHandler(telegramHook, this));
+
+		// Allows Telegram users to see who's online
+		telegramHook.addListener(new PlayerListCommandHandler(telegramHook));
+
 		// Console sender handler, allows players to send console commands (telegram.console permission)
 		// telegramHook.addListener(new CommandHandler(telegramHook, this));
 
