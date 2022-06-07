@@ -56,12 +56,16 @@ public class Message {
 	}
 
 	public String getTextContent() {
+		String s = "";
 		switch (getType()) {
-			case TEXT: return text;
-			case POLL: return poll.question;
-			case PINNED: return pinned_message.getTextContent();
-			default: return caption;
+			case TEXT: s = text;
+			case POLL: s = poll.question;
+			case PINNED: s = pinned_message.getTextContent();
+			default: s = caption;
 		}
+		if(s == null)
+			s = "";
+		return s;
 	}
 
 	public void setText(String text) {
