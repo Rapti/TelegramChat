@@ -33,6 +33,10 @@ enable-chatmessages: true
 silent-joinquitmessages: false
 silent-deathmessages: false
 silent-chatmessages: false
+# If a player joins within this number of minutes after leaving, the bot will delete the quit message instead of sending a join message.
+# Helps get rid of spam due to players with connection issues or players leaving the server to skip the night.
+# Set to 0 to disable this feature.
+delete-quitmessages-within: 1
 # Allows group chat users to use the chat bridge without having linked their accounts.
 # Note that this will allow banned players to still use the chat if they have an unlinked Telegram account.
 no-link-required: false

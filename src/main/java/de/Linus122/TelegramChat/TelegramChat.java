@@ -14,10 +14,12 @@ import java.util.logging.Level;
 
 import de.Linus122.Handlers.PlayerListCommandHandler;
 import de.Linus122.Handlers.VanishHandler;
+import de.Linus122.TelegramComponents.Message;
 import de.myzelyam.api.vanish.VanishAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -47,11 +49,15 @@ public class TelegramChat extends JavaPlugin implements Listener {
 	private static TelegramChat instance;
 	private static boolean isSuperVanish;
 
+	private static RecentQuitMessages recentQuitMessageHandler;
+
 	@Override
 	public void onEnable() {
 		this.saveDefaultConfig();
 		cfg = this.getConfig();
 		instance = this;
+
+		recentQuitMessageHandler = new RecentQuitMessages(cfg.getInt("delete-quitmessages-within", 1));
 
 		Bukkit.getPluginCommand("telegram").setExecutor(new TelegramCmd());
 		Bukkit.getPluginCommand("linktelegram").setExecutor(new LinkTelegramCmd());
@@ -224,15 +230,17 @@ public class TelegramChat extends JavaPlugin implements Listener {
 		if (!this.getConfig().getBoolean("enable-joinquitmessages"))
 			return;
 
-		if(isSuperVanish && VanishAPI.isInvisible(e.getPlayer()))
+		final Player player = e.getPlayer();
+
+		if(isSuperVanish && VanishAPI.isInvisible(player))
 			return;
 
-		if (telegramHook.connected) {
+		if (telegramHook.connected && !recentQuitMessageHandler.deleteOldQuitMessages(player)) {
 			ChatMessageToTelegram chat = new ChatMessageToTelegram();
 			chat.parse_mode = "Markdown";
-			chat.text = Utils.formatMSG("join-message", e.getPlayer().getName())[0];
+			chat.text = Utils.formatMSG("join-message", player.getName())[0];
 			chat.disable_notification = this.getConfig().getBoolean("silent-joinquitmessages", false);
-			telegramHook.sendAll(chat);
+			telegramHook.sendAll(chat, (Message m) -> Bukkit.getLogger().info("getChat returns null: " + (m.getChat() == null)));
 		}
 	}
 
@@ -255,15 +263,17 @@ public class TelegramChat extends JavaPlugin implements Listener {
 		if (!this.getConfig().getBoolean("enable-joinquitmessages"))
 			return;
 
-		if(isSuperVanish && VanishAPI.isInvisible(e.getPlayer()))
+		final Player player = e.getPlayer();
+
+		if(isSuperVanish && VanishAPI.isInvisible(player))
 			return;
 
 		if (telegramHook.connected) {
 			ChatMessageToTelegram chat = new ChatMessageToTelegram();
 			chat.parse_mode = "Markdown";
-			chat.text = Utils.formatMSG("quit-message", e.getPlayer().getName())[0];
+			chat.text = Utils.formatMSG("quit-message", player.getName())[0];
 			chat.disable_notification = this.getConfig().getBoolean("silent-joinquitmessages", false);
-			telegramHook.sendAll(chat);
+			telegramHook.sendAll(chat, (Message m) -> recentQuitMessageHandler.registerNewQuitMessage(player, m.getChat().getId(), m.getMessage_id()));
 		}
 	}
 

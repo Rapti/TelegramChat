@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Telegram {
 	public JsonObject authJson;
@@ -159,26 +160,40 @@ public class Telegram {
 		sendMsg(chat);
 	}
 
-	public void sendMsg(ChatMessageToTelegram chat) {
+	public Message sendMsg(ChatMessageToTelegram chat) {
 		for (TelegramActionListener actionListener : listeners) {
 			actionListener.onSendToTelegram(chat);
 		}
 		Gson gson = new Gson();
 		if(!chat.isCancelled()){
-			post("sendMessage", gson.toJson(chat, ChatMessageToTelegram.class));	
+			JsonObject reply = post("sendMessage", gson.toJson(chat, ChatMessageToTelegram.class));
+			if(reply != null && reply.getAsJsonPrimitive("ok").getAsBoolean()) {
+				try {
+					return gson.fromJson(reply.getAsJsonObject("result"), Message.class);
+				} catch(JsonSyntaxException ignored) {}
+			}
 		}
+		return null;
 	}
 
 	public void sendAll(final ChatMessageToTelegram chat) {
+		sendAll(chat, null);
+	}
+	public void sendAll(final ChatMessageToTelegram chat, Consumer<Message> messageConsumer) {
 		new Thread(new Runnable() {
 			public void run() {
 				for (long id : TelegramChat.getBackend().chat_ids) {
 					chat.chat_id = id;
-					// post("sendMessage", gson.toJson(chat, Chat.class));
-					sendMsg(chat);
+					Message reply = sendMsg(chat);
+					if(messageConsumer != null)
+						messageConsumer.accept(reply);
 				}
 			}
 		}).start();
+	}
+
+	public void deleteMessage(long chat_id, int message_id) {
+		post("deleteMessage", "{\"chat_id\": " + chat_id + ", \"message_id\": " + message_id + "}");
 	}
 
 	public void updateGroupDescOffline() {updateGroupDesc(null, true);}
