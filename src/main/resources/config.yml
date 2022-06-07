@@ -29,14 +29,19 @@ messages:
 enable-joinquitmessages: true
 enable-deathmessages: true
 enable-chatmessages: true
+# Send these types of messages to Telegram without causing a notification sound
 silent-joinquitmessages: false
 silent-deathmessages: false
 silent-chatmessages: false
+# Allows group chat users to use the chat bridge without having linked their accounts.
+# Note that this will allow banned players to still use the chat if they have an unlinked Telegram account.
 no-link-required: false
 enable-group-description: false
 group-description:
+  # Static text that should always be in the description
   base: "Welcome to our server's group chat!\n\n%s"
   nobody-online: "There are no players currently online."
   num-players: "%s player(s) online"
-  player: "\n`%s`"
+  player: "- %s"
+  # Used when the server goes offline or the plugin gets disabled. Might not be sent when the server doesn't stop gracefully (crash, power outage, etc.)
   offline: "The server is offline."
