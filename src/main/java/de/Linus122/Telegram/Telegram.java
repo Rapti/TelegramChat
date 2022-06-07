@@ -237,13 +237,13 @@ public class Telegram {
 			for (long id : TelegramChat.getBackend().chat_ids) {
 				if(id >= 0) continue; // Disregard private chats
 				update.chat_id = id;
-				System.out.println("Sending JSON " + gson.toJson(update, ChatDescription.class));
 				post("setChatDescription", gson.toJson(update, ChatDescription.class));
 			}
 		}).start();
 	}
 
-	public void post(String method, String json) {
+	public JsonObject post(String method, String json) {
+		Bukkit.getLogger().fine("Sending JSON " + json);
 		try {
 			String body = json;
 			URL url = new URL(String.format(API_URL_GENERAL, TelegramChat.getBackend().getToken(), method));
@@ -261,15 +261,27 @@ public class Telegram {
 			writer.close();
 			wr.close();
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			StringBuilder sb = new StringBuilder();
 
-			writer.close();
-			reader.close();
+			try {
+				String inputLine;
+				while ((inputLine = br.readLine()) != null) {
+					sb.append(inputLine);
+				}
+				br.close();
+
+				return new JsonParser().parse(sb.toString()).getAsJsonObject();
+			} catch (JsonParseException | IllegalStateException ignored) {
+			} finally {
+				writer.close();
+				br.close();
+			}
 		} catch (Exception e) {
 			reconnect();
 			System.out.print("[Telegram] Disconnected from Telegram, reconnect...");
 		}
-
+		return null;
 	}
 
 	public JsonObject sendGet(String url) throws IOException {
