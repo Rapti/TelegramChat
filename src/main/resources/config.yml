@@ -15,7 +15,7 @@ messages:
   photo: "sent an image"
   video: "sent a video"
   audio: "sent an audio file"
-  file: "sent a file"
+  document: "sent a file"
   sticker: "posted a sticker"
   voice: "sent a voice message"
   videonote: "sent a video message"
