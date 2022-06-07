@@ -8,6 +8,8 @@ public class ChatMessageToMc extends Cancellable {
 	String content;
 	long chatID_sender;
 
+	MessageType type;
+
 	public ChatMessageToMc(String content, long chatID_sender, String tgname_sender) {
 		this(null, content, chatID_sender, tgname_sender);
 	}
@@ -19,6 +21,7 @@ public class ChatMessageToMc extends Cancellable {
 		this.uuid_sender = uuid_sender;
 		this.content = content;
 		this.chatID_sender = chatID_sender;
+		this.type = MessageType.TEXT;
 	}
 
 	public UUID getUuid_sender() {
@@ -45,11 +48,23 @@ public class ChatMessageToMc extends Cancellable {
 		this.chatID_sender = chatID_sender;
 	}
 
-	public String getTelegramName() {
+	public String getSenderTelegramName() {
 		return tgname_sender;
 	}
 
 	public boolean senderIsLinked() {
 		return uuid_sender != null;
+	}
+
+	public void setSenderTelegramName(String tgname_sender) {
+		this.tgname_sender = tgname_sender;
+	}
+
+	public MessageType getType() {
+		return type;
+	}
+
+	public void setType(MessageType type) {
+		this.type = type;
 	}
 }

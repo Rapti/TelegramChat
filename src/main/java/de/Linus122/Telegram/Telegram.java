@@ -91,23 +91,19 @@ public class Telegram {
 							if (!TelegramChat.getBackend().chat_ids.contains(chat.getId()))
 								TelegramChat.getBackend().chat_ids.add(chat.getId());
 
-							if (update.getMessage().getText() != null) {
-								String text = update.getMessage().getText();
-								if (text.length() == 0)
-									return true;
-								if (text.equals("/start")) {
-									if (TelegramChat.getBackend().isFirstUse()) {
-										TelegramChat.getBackend().setFirstUse(false);
-										ChatMessageToTelegram chat2 = new ChatMessageToTelegram();
-										chat2.chat_id = chat.getId();
-										chat2.parse_mode = "Markdown";
-										chat2.text = Utils.formatMSG("setup-msg")[0];
-										this.sendMsg(chat2);
-									}
-									this.sendMsg(chat.getId(), Utils.formatMSG("can-see-but-not-chat")[0]);
-								} else {
-									handleUserMessage(text, update);
+							String text = update.getMessage().getText();
+							if (text != null && text.equals("/start")) {
+								if (TelegramChat.getBackend().isFirstUse()) {
+									TelegramChat.getBackend().setFirstUse(false);
+									ChatMessageToTelegram chat2 = new ChatMessageToTelegram();
+									chat2.chat_id = chat.getId();
+									chat2.parse_mode = "Markdown";
+									chat2.text = Utils.formatMSG("setup-msg")[0];
+									this.sendMsg(chat2);
 								}
+								this.sendMsg(chat.getId(), Utils.formatMSG("can-see-but-not-chat")[0]);
+							} else {
+								handleUserMessage(text, update);
 							}
 
 						} else if (!chat.isPrivate()) {
@@ -115,11 +111,9 @@ public class Telegram {
 							long id = chat.getId();
 							if (!TelegramChat.getBackend().chat_ids.contains(id))
 								TelegramChat.getBackend().chat_ids.add(id);
-							
-							if (update.getMessage().getText() != null) {
-								String text = update.getMessage().getText();
-								handleUserMessage(text, update);
-							}
+
+							String text = update.getMessage().getText();
+							handleUserMessage(text, update);
 						}
 					}
 
@@ -130,9 +124,12 @@ public class Telegram {
 	}
 	
 	public void handleUserMessage(String text, Update update) {
-		Chat chat = update.getMessage().getChat();
-		long user_id = update.getMessage().getFrom().getId();
-		String tg_name = update.getMessage().getFrom().getFirst_name();
+		if(text == null) text = "";
+		final Message message = update.getMessage();
+		MessageType mt = message.getType();
+		Chat chat = message.getChat();
+		long user_id = message.getFrom().getId();
+		String tg_name = message.getFrom().getFirst_name();
 		if (TelegramChat.getBackend().getLinkCodes().containsKey(text)) {
 			// LINK
 			TelegramChat.link(TelegramChat.getBackend().getUUIDFromLinkCode(text), user_id);
@@ -147,6 +144,11 @@ public class Telegram {
 			}
 
 			if(chatMsg != null) {
+				if(mt != MessageType.TEXT && mt != MessageType.UNKNOWN) {
+					chatMsg.setType(mt);
+					chatMsg.setContent(message.getTextContent());
+				}
+				
 				for (TelegramActionListener actionListener : listeners) {
 					actionListener.onSendToMinecraft(chatMsg);
 				}

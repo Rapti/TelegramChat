@@ -19,26 +19,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.world.WorldLoadEvent;
-import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.gson.Gson;
 
 import de.Linus122.Handlers.BanHandler;
-import de.Linus122.Handlers.CommandHandler;
 import de.Linus122.Metrics.Metrics;
 import de.Linus122.Telegram.Telegram;
 import de.Linus122.Telegram.Utils;
 import de.Linus122.TelegramComponents.Chat;
 import de.Linus122.TelegramComponents.ChatMessageToMc;
 import de.Linus122.TelegramComponents.ChatMessageToTelegram;
+
+import static de.Linus122.TelegramComponents.MessageType.TEXT;
 
 public class TelegramChat extends JavaPlugin implements Listener {
 	private static File datad = new File("plugins/TelegramChat/data.json");
@@ -158,26 +156,32 @@ public class TelegramChat extends JavaPlugin implements Listener {
 	}
 
 	public static void sendToMC(ChatMessageToMc chatMsg) {
+		String senderName = "";
 		if(chatMsg.senderIsLinked())
-			sendToMC(chatMsg.getUuid_sender(), chatMsg.getContent(), chatMsg.getChatID_sender());
+			senderName = Bukkit.getOfflinePlayer(chatMsg.getUuid_sender()).getName();
 		else 
-			sendToMC(chatMsg.getTelegramName(), chatMsg.getContent(), chatMsg.getChatID_sender());
-	}
+			senderName = chatMsg.getSenderTelegramName();
 
-	private static void sendToMC(UUID uuid, String msg, long sender_chat) {
-		OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
-		sendToMC(op.getName(), msg, sender_chat);
-	}
-	private static void sendToMC(String name, String msg, long sender_chat) {
+		String msg = chatMsg.getContent();
+		String msgF;
+		if(chatMsg.getType() == TEXT) {
+			msgF = Utils.formatMSG("general-message-to-mc", senderName, msg)[0];
+		} else {
+			String specialMessage = Utils.formatMSG(chatMsg.getType().toString().toLowerCase())[0];
+			if(msg != null && msg.length() > 0) {
+				msgF = Utils.formatMSG("special-message-with-caption", senderName, specialMessage, msg)[0];
+			} else {
+				msgF = Utils.formatMSG("special-message-without-caption", senderName, specialMessage)[0];
+			}
+		}
+
 		List<Long> receivers = new ArrayList<Long>();
 		receivers.addAll(TelegramChat.data.chat_ids);
-		receivers.remove((Object) sender_chat);
-		String msgF = Utils.formatMSG("general-message-to-mc", name, msg)[0];
+		receivers.remove((Object) chatMsg.getChatID_sender());
 		for (long id : receivers) {
 			telegramHook.sendMsg(id, msgF.replaceAll("§.", ""));
 		}
 		Bukkit.broadcastMessage(msgF.replace("&", "§"));
-
 	}
 
 	public static void link(UUID player, long userID) {
