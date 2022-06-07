@@ -1,11 +1,14 @@
 package de.Linus122.Telegram;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import com.google.gson.*;
+import de.Linus122.TelegramChat.TelegramChat;
+import de.Linus122.TelegramComponents.*;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -13,19 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import de.Linus122.TelegramComponents.*;
-import de.Linus122.TelegramChat.TelegramChat;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.world.WorldUnloadEvent;
 
 public class Telegram {
 	public JsonObject authJson;
