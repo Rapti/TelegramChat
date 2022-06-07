@@ -14,4 +14,5 @@ public class ChatMessageToTelegram extends Cancellable {
 
 	public long chat_id;
 	public String parse_mode;
+	public boolean disable_notification = false;
 }

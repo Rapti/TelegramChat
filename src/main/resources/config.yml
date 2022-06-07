@@ -29,6 +29,9 @@ messages:
 enable-joinquitmessages: true
 enable-deathmessages: true
 enable-chatmessages: true
+silent-joinquitmessages: false
+silent-deathmessages: false
+silent-chatmessages: false
 no-link-required: false
 enable-group-description: false
 group-description:

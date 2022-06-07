@@ -231,6 +231,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 			ChatMessageToTelegram chat = new ChatMessageToTelegram();
 			chat.parse_mode = "Markdown";
 			chat.text = Utils.formatMSG("join-message", e.getPlayer().getName())[0];
+			chat.disable_notification = this.getConfig().getBoolean("silent-joinquitmessages", false);
 			telegramHook.sendAll(chat);
 		}
 	}
@@ -243,6 +244,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 			ChatMessageToTelegram chat = new ChatMessageToTelegram();
 			chat.parse_mode = "Markdown";
 			chat.text = Utils.formatMSG("death-message", e.getDeathMessage())[0];
+			chat.disable_notification = this.getConfig().getBoolean("silent-deathmessages", false);
 			telegramHook.sendAll(chat);
 		}
 	}
@@ -260,6 +262,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 			ChatMessageToTelegram chat = new ChatMessageToTelegram();
 			chat.parse_mode = "Markdown";
 			chat.text = Utils.formatMSG("quit-message", e.getPlayer().getName())[0];
+			chat.disable_notification = this.getConfig().getBoolean("silent-joinquitmessages", false);
 			telegramHook.sendAll(chat);
 		}
 	}
@@ -276,6 +279,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 			chat.text = Utils
 					.escape(Utils.formatMSG("general-message-to-telegram", e.getPlayer().getName(), e.getMessage())[0])
 					.replaceAll("§.", "");
+			chat.disable_notification = this.getConfig().getBoolean("silent-chatmessages", false);
 			telegramHook.sendAll(chat);
 		}
 	}
