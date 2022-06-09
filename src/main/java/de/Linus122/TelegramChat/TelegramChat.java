@@ -173,7 +173,8 @@ public class TelegramChat extends JavaPlugin implements Listener {
 		if(chatMsg.getType() == TEXT) {
 			msgF = Utils.formatMSG("general-message-to-mc", senderName, msg)[0];
 		} else {
-			String specialMessage = Utils.formatMSG(chatMsg.getType().toString().toLowerCase())[0];
+			String specialMessage = Utils.formatMSG(chatMsg.getType().toString().toLowerCase(), "")[0];
+			if(specialMessage.isEmpty()) return; // Server admin doesn't want this message type to be forwarded to Minecraft
 			if(msg != null && msg.length() > 0) {
 				msgF = Utils.formatMSG("special-message-with-caption", senderName, specialMessage, msg)[0];
 			} else {
