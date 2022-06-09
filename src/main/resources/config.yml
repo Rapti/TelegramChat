@@ -14,6 +14,7 @@ messages:
   special-message-with-caption: "&c[Telegram]&r %s &7%s: &r%s"
   photo: "sent an image"
   video: "sent a video"
+  animation: "posted a GIF"
   audio: "sent an audio file"
   document: "sent a file"
   sticker: "posted a sticker"

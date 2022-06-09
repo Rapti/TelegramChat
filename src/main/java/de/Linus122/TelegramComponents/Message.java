@@ -8,6 +8,7 @@ public class Message {
 	private String text;
 
 	private GeneralMedia[] photo;
+	private GeneralMedia animation;
 	private GeneralMedia audio;
 	private GeneralMedia document;
 	private Object sticker;
@@ -76,6 +77,7 @@ public class Message {
 		if(photo != null && photo.length > 0) return MessageType.PHOTO;
 		if(audio != null) return MessageType.AUDIO;
 		if(video != null) return MessageType.VIDEO;
+		if(animation != null) return MessageType.ANIMATION;
 		if(voice != null) return MessageType.VOICE;
 		if(videoNote != null) return MessageType.VIDEONOTE;
 		if(poll != null) return MessageType.POLL;
