@@ -1,17 +1,21 @@
 messages:
-  # telegram messages
+
+  # Minecraft to Telegram
+
   general-message-to-telegram: "%s: %s"
   join-message: "`%s joined the game.`"
   quit-message: "`%s left the game.`"
   death-message: "`%s`"
-  need-to-link: "Sorry, please link your account with */linktelegram ingame* to use the chat!"
-  can-see-but-not-chat: "You can see the chat but you can't chat at the moment. Type */linktelegram ingame* to chat!"
-  success-linked: "Success! Linked %s"
-  setup-msg: "Congratulations, your bot is working! Have fun with this Plugin. Feel free to donate via *PayPal* to keep this project up to date! [PayPal Donation URL](http://donate.spaceio.xyz/)"
-  # minecraft message:
+
+  # Telegram to Minecraft
+
+  # Used for regular text messages
   general-message-to-mc: "&c[Telegram]&r %s: %s"
+  # Used for special messages without a caption
   special-message-without-caption: "&c[Telegram]&r %s &7%s&r"
+  # Used for special messages which the sender has added a caption to. Also used for polls.
   special-message-with-caption: "&c[Telegram]&r %s &7%s: &r%s"
+  # Leave blank to disable individual message types
   photo: "sent an image"
   video: "sent a video"
   animation: "posted a GIF"
@@ -23,10 +27,20 @@ messages:
   poll: "started a poll"
   location: "sent a location"
   pinned: "pinned a message"
+
+  # Setup
+
+  # In Telegram
+  need-to-link: "Sorry, please link your account with */linktelegram ingame* to use the chat!"
+  can-see-but-not-chat: "You can see the chat but you can't chat at the moment. Type */linktelegram ingame* to chat!"
+  success-linked: "Success! Linked %s"
+  setup-msg: "Congratulations, your bot is working! Have fun with this Plugin. Feel free to donate via *PayPal* to keep this project up to date! [PayPal Donation URL](http://donate.spaceio.xyz/)"
+  # In Minecraft
   no-permissions: "&cYou don't have permissions to use this!"
   cant-link-console: "&cSorry, but you can't link the console currently."
   need-to-add-bot-first: "&cPlease add a bot to your server first! /telegram"
   get-token: "&aAdd %s to Telegram and send this message to %s: \n%s"
+
 enable-joinquitmessages: true
 enable-deathmessages: true
 enable-chatmessages: true
@@ -35,18 +49,20 @@ silent-joinquitmessages: false
 silent-deathmessages: false
 silent-chatmessages: false
 # If a player joins within this number of minutes after leaving, the bot will delete the quit message instead of sending a join message.
-# Helps get rid of spam due to players with connection issues or players leaving the server to skip the night.
+# This helps keep the Telegram chat clean by reducing spam due to players with connection issues or players leaving the server to skip the night.
 # Set to 0 to disable this feature.
 delete-quitmessages-within: 1
 # Allows group chat users to use the chat bridge without having linked their accounts.
 # Note that this will allow banned players to still use the chat if they have an unlinked Telegram account.
 no-link-required: false
+# Enable to automatically update a group chat's description to include the current list of online players.
 enable-group-description: false
 group-description:
-  # Static text that should always be in the description
+  # Static text that should always be in the description. Put %s where you want the generated part to be inserted.
   base: "Welcome to our server's group chat!\n\n%s"
   nobody-online: "There are no players currently online."
   num-players: "%s player(s) online"
   player: "- %s"
-  # Used when the server goes offline or the plugin gets disabled. Might not be sent when the server doesn't stop gracefully (crash, power outage, etc.)
+  # Used when the server goes offline or the plugin gets disabled for another reason.
+  # Might not be sent when the server doesn't stop gracefully (crash, power outage, etc.)
   offline: "The server is offline."
