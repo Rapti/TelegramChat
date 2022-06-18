@@ -118,6 +118,7 @@ public class Telegram {
 		if(text == null) text = "";
 		final Message message = update.getMessage();
 		MessageType mt = message.getType();
+		if(mt == MessageType.UNKNOWN) return;
 		Chat chat = message.getChat();
 		long user_id = message.getFrom().getId();
 		String tg_name = message.getFrom().getFirst_name();
@@ -135,7 +136,7 @@ public class Telegram {
 			}
 
 			if(chatMsg != null) {
-				if(mt != MessageType.TEXT && mt != MessageType.UNKNOWN) {
+				if(mt != MessageType.TEXT) {
 					chatMsg.setType(mt);
 					chatMsg.setContent(message.getTextContent());
 				}
