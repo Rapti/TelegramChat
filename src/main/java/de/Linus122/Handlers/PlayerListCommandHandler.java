@@ -28,18 +28,18 @@ public class PlayerListCommandHandler implements TelegramActionListener {
 		if(chatMsg.getContent().startsWith("/players")) {
 
 			Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-			String reply = "";
+			StringBuilder reply = new StringBuilder();
 
 			if (players.size() == 0) {
-				reply = TelegramChat.getCfg().getString("group-description.nobody-online", "There are no players currently online.");
+				reply = new StringBuilder(TelegramChat.getCfg().getString("group-description.nobody-online", "There are no players currently online."));
 			} else {
-				reply = String.format(TelegramChat.getCfg().getString("group-description.num-players", "%s player(s) online"), players.size());
+				reply = new StringBuilder(String.format(TelegramChat.getCfg().getString("group-description.num-players", "%s player(s) online"), players.size()));
 				String format = TelegramChat.getCfg().getString("group-description.player", "%s");
 				for (Player p : players) {
-					reply += "\n"+String.format(format, p.getDisplayName());
+					reply.append("\n").append(String.format(format, p.getDisplayName()));
 				}
 			}
-			telegram.sendMsg(new ChatMessageToTelegram(reply, chatMsg.getChatID_sender(), "Markdown"));
+			telegram.sendMsg(new ChatMessageToTelegram(reply.toString(), chatMsg.getChatID_sender(), "Markdown"));
 
 			chatMsg.cancel();
 		}

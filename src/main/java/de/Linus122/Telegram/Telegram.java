@@ -208,7 +208,7 @@ public class Telegram {
 		final int maxlength = 255;
 
 		String base = TelegramChat.getCfg().getString("group-description.base", "%s");
-		String status = "";
+		String status;
 		if(goingOffline) {
 			status = TelegramChat.getCfg().getString("group-description.offline", "The server is offline.");
 		} else {
@@ -227,7 +227,6 @@ public class Telegram {
 			} else {
 				status = String.format(TelegramChat.getCfg().getString("group-description.num-players", "%s player(s) online"), players.size());
 				String format = TelegramChat.getCfg().getString("group-description.player", "%s");
-				String playerlist = "";
 				int remaining = players.size();
 				for (Player p : players) {
 					final int length = String.format(base, status).length();

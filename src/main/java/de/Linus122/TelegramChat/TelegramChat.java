@@ -162,7 +162,7 @@ public class TelegramChat extends JavaPlugin implements Listener {
 	}
 
 	public static void sendToMC(ChatMessageToMc chatMsg) {
-		String senderName = "";
+		String senderName;
 		if(chatMsg.senderIsLinked())
 			senderName = Bukkit.getOfflinePlayer(chatMsg.getUuid_sender()).getName();
 		else 
